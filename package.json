@@ -1,0 +1,28 @@
+{
+  "name": "tp",
+  "version": "1.0.0",
+  "description": "TP node JS",
+  "main": "app.js",
+  "directories": {
+    "test": "tests"
+  },
+  "scripts": {
+    "test": "mocha ./tests",
+    "start": "node app.js"
+  },
+  "private": true,
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/thibaultferriere/tpNodeJs.git"
+  },
+  "author": "Sadish Valentin Thibault",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/thibaultferriere/tpNodeJs/issues"
+  },
+  "homepage": "https://github.com/thibaultferriere/tpNodeJs#readme",
+  "dependencies": {
+    "express": "^4.16.4",
+    "mocha": "^5.2.0"
+  }
+}
