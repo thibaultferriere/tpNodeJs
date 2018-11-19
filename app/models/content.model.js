@@ -1,84 +1,105 @@
 const utils = require('../utils/utils.js');
 var CONFIG = JSON.parse(process.env.CONFIG);
 const fs = require('fs');
-jsonObject = CONFIG.content;
+process.env.CONFIG = JSON.stringify(CONFIG);
 
 class ContentModel {
 
-    constructor(jsonObject) {
-        if(jsonObject !== undefined){
-            this.type = jsonObject.type;
-            this.id = jsonObject.id;
-            this.title = jsonObject.title;
-            this.src = jsonObject.src;
-            this.fileName = jsonObject.fileName;
+    constructor({type, id, title, src, fileName} = {}) {
+            this.type = type;
+            this.id = id;
+            this.title = title;
+            this.src = src;
+            this.fileName = fileName;
+
+            let data;
+
+        this.getData = () => data;
+
+        this.setData = (value) => {
+            data = value;
         }
     }
 
-    getData() {
-        return this.data;
-    }
-
-    setData(value) {
-        this.data = value;
-    }
+    static create(content, callback) {
+        let success = 0;
 
 
-    static create(content, callback){
-        const dirPath = CONFIG.contentDirectory;
-        var metaData;
+        if (content && content.fileName && content.id) {
+            if (content.type === "img") {
+                fs.writeFile(utils.getDataFilePath(content.fileName), content.getData(), function (err) {
+                    if (err) return callback(err);
 
-        if(content.type === "img"){
-            fs.writeFile(utils.getDataFilePath(content.fileName), content.getData(), function (err) {
-                if (err) throw err;
-                console.log('Saved image!');
+                    success = success + 1;
+                    if (success === 2) {
+                        return callback();
+                    }
+                });
+            }
+
+            //metaData = JSON.parse(content);
+            fs.writeFile(utils.getMetaFilePath(content.id), JSON.stringify(content), function (err) {
+                if (err) return callback(err);
+
+                success = success + 1;
+                if (success === 2) {
+                    return callback();
+                }
             });
+        }else{
+            const err = new Error("error");
+            return callback(err);
         }
-
-        //metaData = JSON.parse(content);
-        fs.writeFile(utils.getMetaFilePath(content.id), content, function (err) {
-            if (err) throw err;
-            console.log('Saved!');
-        });
     }
 
     static read(id, callback){
-        const dirPath = CONFIG.contentDirectory;
-        const extFile = '.meta.json';
-        var contentModel;
+         utils.readFileIfExists(utils.getMetaFilePath(id), (err,data) => {
+             if(err) return callback(err);
 
-        fs.readdir(dirPath + id, (err, data) => {
-            contentModel = JSON.parse(data);
-            return contentModel;
-        });
+             //return callback(new contentModel(JSON.parse(data)));
+             return callback(null, new ContentModel(JSON.parse(data)));
+         });
     }
 
     static update(content, callback){
-        var metaData;
+        let success = 0;
+        if(content && content.id && content.fileName){
 
-        const dirPath = CONFIG.contentDirectory;
+            utils.fileExists(utils.getMetaFilePath(content.id), function(err){
+                if (err) return callback(err);
 
-        metaData = JSON.parse(content);
-        fs.writeFile(dirPath + content.id + '.meta.json', metaData, function (err) {
-            if (err) throw err;
-            console.log('Replaced!');
-        });
+                fs.writeFile(utils.getMetaFilePath(content.id), JSON.stringify(content), function (err) {
+                    if (err) return callback(err);
 
-        if(content.type === 'img' && content.data.length() > 0) {
-            s.writeFile(dirPath + content.fileName + '.img', content.data(), function (err) {
-                if (err) throw err;
-                console.log('Replaced image!');
+                    if(content.type === 'img' && content.getData().length > 0) {
+                        fs.writeFile(utils.getDataFilePath(content.fileName), content.getData(), function (err) {
+                            if (err) return callback(err);
+
+                            return callback();
+                        });
+                    }else{
+                        return callback();
+                    }
+                });
             });
+        }else{
+            const err = new Error("error");
+            return callback(err);
         }
     }
 
     static delete(id, callback){
         const dirPath = CONFIG.contentDirectory;
 
-        fs.unlink(dirPath + id + '.meta.json', function (err) {
-            if (err) throw err;
-            console.log('File deleted!');
+        utils.fileExists(utils.getMetaFilePath(id), function(err) {
+            if (err) return callback(err);
+            fs.unlink(utils.getMetaFilePath(id), function (err) {
+                if (err) callback(err);
+
+                return callback();
+            });
         });
+
     }
 }
 
