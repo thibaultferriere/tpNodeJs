@@ -89,8 +89,6 @@ class ContentModel {
     }
 
     static delete(id, callback){
-        const dirPath = CONFIG.contentDirectory;
-
         utils.fileExists(utils.getMetaFilePath(id), function(err) {
             if (err) return callback(err);
             fs.unlink(utils.getMetaFilePath(id), function (err) {

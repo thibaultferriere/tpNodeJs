@@ -13,9 +13,11 @@ server.listen(CONFIG.port);
 
 var defaultRoute = require("./app/routes/default.route.js");
 var presentationRoute = require("./app/routes/presentation.route.js");
+var contentRoute = require("./app/routes/content.route.js");
 
 app.use(defaultRoute);
 app.use(presentationRoute);
+app.use(contentRoute);
 
 var path = require("path");
 app.use("/admin", express.static(path.join(__dirname, "public/admin")));
