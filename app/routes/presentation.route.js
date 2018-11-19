@@ -35,26 +35,38 @@ module.exports = router;
                     console.log(content.toString());
                     tableauAllFileJson.push(JSON.parse(content));
                     nbJsonContent++;
-                    if(nbJsonContent == tailleTableau){
+                    if (nbJsonContent == tailleTableau) {
                         res.send(tableauAllFileJson);
                     }
-            })
+                });
+            });
         });
     });
 
     router.post('/savePres', (req, res) => {
-        const dirContent = CONFIG.contentDirectory;
+        const dirPath = CONFIG.contentDirectory;
         var idName;
         var jsonContent;
+        var body = "";
 
-        //sur postman, balancer données en json. à l'intérieur se trouve l'id qu'il faut récup
-        //et créer un fichier -> filename = id et contenu = le reste
+        //ecouter evnt data (req)
+        req.on("data",(chunk) => {
+            body += chunk.toString();
+        });
 
-        //var jsonFile = req.body;
-        console.log(jsonFile);
-        fs.readFile(dirPath + jsonFile, (err, content)){
-            jsonContent = JSON.parse(content);
-            idName = content.id;
-        }
+        req.on("end",() => {
+            console.log(body);
+            jsonContent = JSON.parse(body);
+            idName = jsonContent.id;
+            console.log(idName);
+            //creer nom fichier avec id + ecrire dans le fichier
+
+            var fs = require('fs');
+            
+            fs.writeFile(dirPath + idName + '.json', body, function (err) {
+                if (err) throw err;
+                console.log('Saved!');
+                res.sendStatus(200);
+            });
+        });
     });
-});
