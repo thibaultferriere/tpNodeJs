@@ -53,12 +53,15 @@ class ContentModel {
     }
 
     static read(id, callback){
+         console.log("LA METAFILE ST ++++++++" + utils.getMetaFilePath(id));
          utils.readFileIfExists(utils.getMetaFilePath(id), (err,data) => {
              if(err) return callback(err);
 
              //return callback(new contentModel(JSON.parse(data)));
              return callback(null, new ContentModel(JSON.parse(data)));
          });
+
+         console.log("LA DATA 222 EST ----" + data);
     }
 
     static update(content, callback){

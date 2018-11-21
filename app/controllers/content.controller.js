@@ -4,6 +4,7 @@ const path = require('path');
 var CONFIG = JSON.parse(process.env.CONFIG);
 var contentModel = require('./../models/content.model.js');
 const utils = require('../utils/utils.js');
+const dirPath = CONFIG.contentDirectory;
 
 //readFile, foreach, json to create, req res
 
@@ -46,47 +47,86 @@ class ContentController{
     };
 
     create(req,res, next) {
-        //console.log(req.body.type, req.body.title, req.body.file, req.body.src);
-        //console.log(req.body);
-        var body = "";
-        var jsonContent;
         var type;
         var title;
         var src;
         var file;
+        var fileName;
+        var filePath;
 
-        req.on("data",(chunk) => {
-            body += chunk.toString();
-        });
+        type =  req.body.type;
+        title = req.body.title;
+        src =   req.body.src;
+        file =  req.file;
 
-        req.on("end",() => {
-            console.log(body);
-            jsonContent = JSON.parse(body);
-            type = jsonContent.type;
-            title = jsonContent.title;
-            src = jsonContent.src;
-            file = jsonContent.file;
+        fileName = file.filename;
+        filePath = file.path;
 
-            let contentModel1 = new contentModel(type,utils.generateUUID(),title,src,file);
+        console.log(filePath);
 
+        const contentModel1 = new contentModel();
+        contentModel1.id = utils.generateUUID();
+        contentModel1.fileName = fileName;
+        contentModel1.title = title;
+        contentModel1.type = type;
+
+        if(type !== 'img'){
+            contentModel1.src = src;
             contentModel.create(contentModel1, (err) => {
-                if(err) return next(err);
+                if (err) {
+                    console.error(err);
+                    return res.status(500).end(err.message);
+                }
             });
+        }else{
+            if(file !== undefined){
+                contentModel1.src = null;
+                contentModel1.setData(file);
+                contentModel.create(contentModel1, (err) => {
+                    if (err) {
+                        console.error(err);
+                        return res.status(500).end(err.message);
+                    }
+                });
 
-            console.log("SORTIE-------------------");
+                fs.copyFile(filePath, dirPath + fileName, (err) => {
+                    if (err) {
+                        console.error(err);
+                        return res.status(500).end(err.message);
+                    }
+                });
+            }else{
+                console.log("FILE IS UNDEFINED");
+            }
 
-            //res.send(contentModel1);
-
-        });
-
-        //return function(req, res) {
-
-        //};
+        }
+        res.json(contentModel1);
     };
 
-    read(req,res) {
+    read(req,res,next) {
+
+        const dirPath = CONFIG.contentDirectory;
+        var data;
+
+        console.log(req.params.contentId);
+
+        contentModel.read(req.params.contentId, (err,data) => {
+            if(err) return next(err);
+        });
+
+        console.log("lA DATA EST ------ " + data);
+
+        if(data.type === 'img') {
+            res.sendFile(path.join(__dirPath, "../../", dirPath, data.fileName), (err) => {
+                if(err) return next(err);
+            });
+        }else if(req.query.json === "true"){
+            res.json(data);
+        }else if(!data.fileName){
+            res.redirect(data,src);
+        }
+
         console.log(req.params);
-        res.send('NOT IMPLEMENTED READ');
     };
 }
 

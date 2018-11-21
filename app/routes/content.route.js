@@ -1,12 +1,14 @@
 
+var multer = require("multer");
 var express = require("express");
-
-var router = express.Router();
 
 var contentController = require('./../controllers/content.controller.js');
 
+var router = express.Router();
 
-contentController2 = new contentController();
+var multerMiddleware = multer({ "dest": "/tmp/" });
+
+var contentController2 = new contentController();
 
 //router.get('/contents',contentController2.list);
 
@@ -14,22 +16,10 @@ console.log(contentController2.list);
 
 router.route('/contents')
     .get(contentController2.list)
-    .post(contentController2.create);
+    .post(multerMiddleware.single("file"),contentController2.create);
 
-/*router.post('/contents', function(req, res) {
-    console.log(req.body);
-});*/
-
-/*router.post('/contents', function(req, res) {
-    contentController2.create(req,res);
-});*/
-
-/*router.route('/contents')
-    .post(contentController2.create);*/
-
-router.route('/contents/:id')
+router.route('/contents/:contentId')
     .get(contentController2.read);
-
 
 /*contentController.list*/
 //.post(contentController.create);
