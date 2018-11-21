@@ -24,7 +24,7 @@ public class MessageSender implements MessageSenderLocal {
 
     public void sendMessage(UserModel user) {
 
-        ObjectMessage objectMessage = null;
+        ObjectMessage objectMessage = context.createObjectMessage();
         try{
             objectMessage.setObject(user);
         } catch (JMSException e){
