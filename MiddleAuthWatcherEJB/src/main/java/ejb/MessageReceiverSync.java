@@ -13,36 +13,33 @@ import java.util.function.Consumer;
 @Stateless
 @LocalBean
 public class MessageReceiverSync implements MessageReceiverSyncLocal {
-
+    // TODO get jms context
     @Inject
     JMSContext context;
-    @Resource(mappedName = "java:/ProjectTopic")
-    Topic topic;
-    // TODO get jms context
 
-// TODO associate queue from "java:/jms/queue/watcherqueue"
+
+    // TODO associate queue from "java:/jms/queue/watcherqueue"
+    @Resource(mappedName = "java:/ProjectTopic")
+    Queue queue;
 
     public UserModel receiveMessage() {
 
-        JMSConsumer consumer = context.createConsumer(topic);
-// TODO create a consumer
+        // TODO create a consumer
+        JMSConsumer consumer = context.createConsumer(queue);
 
-//TODO Wait 1s incoming message (UserModel)
-
-        int count = 0;
-        while (true) {
-            Message m = consumer.receive(1000);
-            if (m != null) {
-                if (m instanceof UserModel) {
-                    System.out.println("Reading user");
-                    count += 1;
-                } else {
-                    break;
+        //TODO Wait 1s incoming message (UserModel)
+        UserModel user = null;
+            Message message = consumer.receive(1000);
+                if (message instanceof ObjectMessage) {
+                    try {
+                        ObjectMessage objectMessage = (ObjectMessage) message;
+                        user = (UserModel) objectMessage;
+                    } catch(JMSException e){
+                        System.out.println("error try catch queue - " + e);
+                    }
                 }
-            }
-        }
-        System.out.println("Messages received: " + count);
 
-        return m;
+
+        return user;
     }
 }
