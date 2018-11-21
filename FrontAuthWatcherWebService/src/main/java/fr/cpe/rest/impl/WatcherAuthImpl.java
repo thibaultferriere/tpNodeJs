@@ -1,5 +1,7 @@
 package fr.cpe.rest.impl;
 
+import ejb.MessageReceiverSyncLocal;
+import ejb.MessageSenderLocal;
 import fr.cpe.ConnectModel;
 import fr.cpe.UserModel;
 import fr.cpe.rest.WatchAuthRestService;
@@ -12,8 +14,15 @@ import javax.xml.ws.Response;
 
 public class WatcherAuthImpl implements WatchAuthRestService {
 
+    @Inject
+    MessageSenderLocal sender;
+    @Inject
+    MessageReceiverSyncLocal receiver;
+    private static final long serialVersionUID = 1L;
+
     @Override
     public ConnectModel postAuth(ConnectModel connectModel){
+
 
         System.out.println("---------------->>>>> TEEEEEST");
 
@@ -21,7 +30,10 @@ public class WatcherAuthImpl implements WatchAuthRestService {
         String pwd = connectModel.pwd;
 
         UserModel userModel = new UserModel("toto", "toto", login, pwd, "admin");
-        System.out.println("l'objet est" + userModel);
+
+        sender.sendMessage(userModel);
+        UserModel response = receiver.receiveMessage();
+        System.out.println("l'objet est" + userModel + " et :" + response);
         return connectModel;
 
         //    return "Hello (REST)";

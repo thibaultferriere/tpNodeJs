@@ -33,13 +33,13 @@ public class MessageReceiverSync implements MessageReceiverSyncLocal {
                 if (message instanceof ObjectMessage) {
                     try {
                         ObjectMessage objectMessage = (ObjectMessage) message;
-                        user = (UserModel) objectMessage;
+                        user = (UserModel) objectMessage.getObject();
+
                     } catch(JMSException e){
-                        System.out.println("error try catch queue - " + e);
+
+                        System.out.println("error try catch queue - " + e.getMessage());
                     }
                 }
-
-
         return user;
     }
 }

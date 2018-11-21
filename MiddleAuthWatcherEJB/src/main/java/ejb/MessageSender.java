@@ -23,6 +23,13 @@ public class MessageSender implements MessageSenderLocal {
     }
 
     public void sendMessage(UserModel user) {
-        context.createProducer().send(topic, user);
+
+        ObjectMessage objectMessage = null;
+        try{
+            objectMessage.setObject(user);
+        } catch (JMSException e){
+            System.out.println(e.getMessage());
+        }
+        context.createProducer().send(topic, objectMessage);
     }
 }
