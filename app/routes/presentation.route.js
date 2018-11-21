@@ -28,7 +28,7 @@ module.exports = router;
                     //console.log(fileName);
                     tableauFileJson.push(fileName);
                 }
-            })
+            });
             tailleTableau = tableauFileJson.length;
             tableauFileJson.forEach(tableauFileJson => {
                 fs.readFile(dirPath + tableauFileJson, (err, content) => {

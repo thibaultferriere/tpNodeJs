@@ -22,6 +22,7 @@
   },
   "homepage": "https://github.com/thibaultferriere/tpNodeJs#readme",
   "dependencies": {
+    "body-parser": "^1.18.3",
     "express": "^4.16.4",
     "mocha": "^5.2.0"
   }

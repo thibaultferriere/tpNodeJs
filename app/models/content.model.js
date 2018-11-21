@@ -88,7 +88,7 @@ class ContentModel {
         }
     }
 
-    static delete(id, callback){
+    /*static delete(id, callback){
         utils.fileExists(utils.getMetaFilePath(id), function(err) {
             if (err) return callback(err);
             fs.unlink(utils.getMetaFilePath(id), function (err) {
@@ -98,7 +98,7 @@ class ContentModel {
             });
         });
 
-    }
+    }*/
 }
 
 module.exports = ContentModel;
