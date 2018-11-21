@@ -6,6 +6,8 @@ import fr.cpe.ConnectModel;
 import fr.cpe.UserModel;
 import fr.cpe.rest.WatchAuthRestService;
 
+import javax.ejb.EJB;
+import javax.enterprise.inject.Default;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response.Status;
 import javax.inject.Inject;
@@ -14,10 +16,11 @@ import javax.xml.ws.Response;
 
 public class WatcherAuthImpl implements WatchAuthRestService {
 
-    @Inject
-    MessageSenderLocal sender;
-    @Inject
-    MessageReceiverSyncLocal receiver;
+    @EJB
+    private MessageSenderLocal sender;
+
+    @EJB
+    private MessageReceiverSyncLocal receiver;
     private static final long serialVersionUID = 1L;
 
     @Override
