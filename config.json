@@ -1,5 +1,6 @@
 {
   "port":1337,
-  "contentDirectory" : "/home/cpe/IdeaProjects/tp/content/",
+  "contentDirectory1" : "/home/cpe/IdeaProjects/tp/content/",
+  "contentDirectory" : "C:\\Users\\S.SANDAMOURTHY\\Documents\\Pour_Ecole\\NodeJS\\tp\\tpNodeJs\\content\\",
   "presentationDirectory" : "/home/cpe/IdeaProjects/tp/presentation/"
 }

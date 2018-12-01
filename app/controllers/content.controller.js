@@ -27,11 +27,12 @@ class ContentController{
         fs.readdir(dirPath, (err, data) => {
             data.forEach(fileName => {
                 if (!extFile || path.extname(fileName) === extFile) {
-                    //console.log(fileName);
                     tableauFileJson.push(fileName);
                 }
             });
             tailleTableau = tableauFileJson.length;
+
+            console.log(tableauFileJson);
 
             tableauFileJson.forEach(tableauFileJson => {
                 fs.readFile(dirPath + tableauFileJson, (err, content) => {
@@ -113,8 +114,6 @@ class ContentController{
         contentModel.read(req.params.contentId, (err,data) => {
             if(err) return next(err);
         });
-
-        console.log("lA DATA EST ------ " + data);
 
         if(data.type === 'img') {
             res.sendFile(path.join(__dirPath, "../../", dirPath, data.fileName), (err) => {
