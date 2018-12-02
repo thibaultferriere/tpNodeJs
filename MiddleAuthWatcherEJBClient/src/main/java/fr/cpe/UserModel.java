@@ -1,12 +1,9 @@
 package fr.cpe;
-import javax.persistence.Entity;
-import javax.persistence.NamedQuery;
-import javax.persistence.Table;
-import java.io.Serializable;
 
-@Entity
-@Table(name = "users")
-@NamedQuery(name = "Users.list", query = "select u from User u")
+import javax.persistence.*;
+import java.io.Serializable;
+import java.util.List;
+
 
 public class UserModel implements Serializable {
 
@@ -17,14 +14,13 @@ public class UserModel implements Serializable {
     public Role role;
 
 
-
     public UserModel() {
         this.login = "";
         this.pwd = "";
-        this.role = null;
+        this.role = Role.NONE;
     }
 
-    public UserModel(String login, String pwd, Role role){
+    public UserModel(String login, String pwd, Role role) {
         this.login = login;
         this.pwd = pwd;
         this.role = role;
@@ -41,4 +37,6 @@ public class UserModel implements Serializable {
     public void setRole(Role role) {
         this.role = role;
     }
+
+
 }

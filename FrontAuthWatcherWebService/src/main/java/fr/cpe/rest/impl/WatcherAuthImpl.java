@@ -16,6 +16,7 @@ import javax.xml.ws.Response;
 
 public class WatcherAuthImpl implements WatchAuthRestService {
 
+
     @EJB
     private MessageSenderLocal sender;
 
@@ -31,8 +32,7 @@ public class WatcherAuthImpl implements WatchAuthRestService {
 
         String login = connectModel.login;
         String pwd = connectModel.pwd;
-
-        UserModel userModel = new UserModel("toto", "toto", login, pwd, "admin");
+        UserModel userModel = new UserModel(login, pwd, UserModel.Role.ADMIN);
 
         sender.sendMessage(userModel);
         UserModel response = receiver.receiveMessage();

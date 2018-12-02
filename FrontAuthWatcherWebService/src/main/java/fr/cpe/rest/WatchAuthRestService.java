@@ -6,7 +6,7 @@ import javax.json.JsonObject;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 
-
+//http://frontauthwatcherwebservice/rest/WatcherAuth
 @Path("/WatcherAuth")
 public interface WatchAuthRestService {
 
