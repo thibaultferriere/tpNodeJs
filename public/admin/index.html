@@ -1,25 +1,29 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <title>teeeeeeest</title>
+        <title>Page admin</title>
     </head>
     <body>
-        <h1>teeeeeeeest</h1>
+        <h1>Page admin</h1>
         <script src="http://code.jquery.com/jquery-1.10.1.min.js"></script>
         <script src="/socket.io/socket.io.js"></script>
         <script>
+            //Creation variable client en dur
             const socket = io.connect();
             let objJson = {
               "CMD": "START",
               "PRES_ID": "e892c8b3-1b64-4d8f-af64-1c2ab43d6a9c",
             };
+
             JSON.stringify(objJson);
-            console.log(objJson);
+
             socket.on('connection', () => {
+                //Emettre les message data_comm et slidEvent
                 socket.emit('data_comm', socket.id);
                 socket.emit('slidEvent', objJson);
             });
 
+            //Sur la reception d'une metadata, la recuperer
             socket.on('metadata', (data) => {
               console.log("metadata receive : " , data);
             });

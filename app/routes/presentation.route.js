@@ -8,8 +8,7 @@ var router = express.Router();
 var CONFIG = JSON.parse(process.env.CONFIG);
 module.exports = router;
 
-// TODO : Routing using
-
+//Charger un presentation
     router.get('/loadPres', (req, res) => {
 
         var tailleTableau = 0;
@@ -25,7 +24,7 @@ module.exports = router;
             //res.send(data.toString());
             data.forEach(fileName => {
                 if (!extFile || path.extname(fileName) === extFile) {
-                    //console.log(fileName);
+
                     tableauFileJson.push(fileName);
                 }
             });
@@ -43,6 +42,7 @@ module.exports = router;
         });
     });
 
+//Sauvegarder une presentation
     router.post('/savePres', (req, res) => {
         const dirPath = CONFIG.contentDirectory;
         var idName;
@@ -59,10 +59,10 @@ module.exports = router;
             jsonContent = JSON.parse(body);
             idName = jsonContent.id;
             console.log(idName);
-            //creer nom fichier avec id + ecrire dans le fichier
 
+            //creer nom fichier avec id + ecrire dans le fichier
             var fs = require('fs');
-            
+
             fs.writeFile(dirPath + idName + '.json', body, function (err) {
                 if (err) throw err;
                 console.log('Saved!');

@@ -14,6 +14,7 @@ class ContentController{
     constructor() {
     }
 
+//Renvoyer la list des fichier json contenue
     list(req,res){
 
         var tailleTableau = 0;
@@ -30,10 +31,12 @@ class ContentController{
                     tableauFileJson.push(fileName);
                 }
             });
+            //recupere chaque element du repertoire
             tailleTableau = tableauFileJson.length;
 
             console.log(tableauFileJson);
 
+            // pour chaque element contenue dans le repertoire
             tableauFileJson.forEach(tableauFileJson => {
                 fs.readFile(dirPath + tableauFileJson, (err, content) => {
                     console.log(content.toString());
@@ -47,6 +50,7 @@ class ContentController{
         });
     };
 
+    //creation fichier
     create(req,res, next) {
         var type;
         var title;
@@ -55,6 +59,7 @@ class ContentController{
         var fileName;
         var filePath;
 
+        //Recupere information body de la requete
         type =  req.body.type;
         title = req.body.title;
         src =   req.body.src;
@@ -63,8 +68,7 @@ class ContentController{
         fileName = file.filename;
         filePath = file.path;
 
-        console.log(filePath);
-
+        //Creation de l'objet
         const contentModel1 = new contentModel();
         contentModel1.id = utils.generateUUID();
         contentModel1.fileName = fileName;
@@ -104,6 +108,7 @@ class ContentController{
         res.json(contentModel1);
     };
 
+    //Lire un fichier particulier
     read(req,res,next) {
 
         const dirPath = CONFIG.contentDirectory;
@@ -113,20 +118,44 @@ class ContentController{
 
         contentModel.read(req.params.contentId, (err,data) => {
             if(err) return next(err);
+
+            if(data.type === 'img') {
+                res.sendFile(path.join(__dirPath, "../../", dirPath, data.fileName), (err) => {
+                    if(err) return next(err);
+                });
+            }else if(req.query.json === "true"){
+                res.json(data);
+            }else if(!data.fileName){
+                res.redirect(data,src);
+            }
+
+            console.log(req.params);
         });
+      }
 
-        if(data.type === 'img') {
-            res.sendFile(path.join(__dirPath, "../../", dirPath, data.fileName), (err) => {
-                if(err) return next(err);
-            });
-        }else if(req.query.json === "true"){
-            res.json(data);
-        }else if(!data.fileName){
-            res.redirect(data,src);
-        }
+      /*static read(req, res, next) {
+       if (!req.params.contentId) throw new Error ("No id found !");
 
-        console.log(req.params);
-    };
+       contentModel.read(req.params.contentId, (err, data) => {
+           if (err) res.send(err.message);
+
+           if (data.type === 'img'){
+               res.sendFile(utils.getDataFilePath(data.fileName), (err) => {
+                   if (err) {
+                       next(err);
+                   } else {
+                       console.log('Opened file successfully');
+               }});
+           } else {
+               if (req.query.json === 'true') {
+                   res.send(data);
+               }
+               else {
+                   res.redirect(data.src);
+               }
+           }
+       })
+   }*/
 }
 
 module.exports = ContentController;
